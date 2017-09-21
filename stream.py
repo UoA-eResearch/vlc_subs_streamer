@@ -40,8 +40,12 @@ while True:
     filename_wo_ext = os.path.splitext(filename)[0]
     srt_file = filename_wo_ext + ".srt"
     print("Reading {}".format(srt_file))
-    with open(srt_file) as f:
-      subs = list(srt.parse(f.read()))
+    try:
+      with open(srt_file) as f:
+        subs = list(srt.parse(f.read()))
+    except Exception as e:
+      subs = []
+      print(e)
     last_file = filename
 
   pos = get_time()
