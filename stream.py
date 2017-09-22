@@ -5,6 +5,14 @@ import time
 import telnetlib
 import re
 import os
+from socket import *
+
+ips = ["172.22.0.80", "172.22.0.81", "172.22.0.82"]
+
+def broadcast(msg, port=15000):
+  for ip in ips:
+    s.sendto(msg, (ip, port))
+  s.sendto(msg, ('<broadcast>', port))
 
 def get_file():
   t.write("status\n")
@@ -22,12 +30,17 @@ def get_time():
   s = int(s)
   return s
 
+# Setup VLC telnet
 t = telnetlib.Telnet("localhost", 4212)
 t.read_until("Password: ")
 t.write("admin\n")
 t.read_until(">")
 
 print("connected to vlc")
+
+# Setup UDP broadcast socket
+s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
+s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
 last_file = None
 last_sub = ""
@@ -53,4 +66,5 @@ while True:
     if pos >= sub.start.total_seconds() and pos <= sub.end.total_seconds() and sub != last_sub:
       last_sub = sub
       print(sub.content)
+      broadcast(sub.content)
   time.sleep(.1)
