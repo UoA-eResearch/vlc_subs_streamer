@@ -11,20 +11,20 @@ ips = ["172.22.0.80", "172.22.0.81", "172.22.0.82"]
 
 def broadcast(msg, port=15000):
   for ip in ips:
-    s.sendto(msg, (ip, port))
-  s.sendto(msg, ('<broadcast>', port))
+    s.sendto(msg.encode("utf-8"), (ip, port))
+  s.sendto(msg.encode("utf-8"), ('<broadcast>', port))
 
 def get_file():
-  t.write("status\n")
-  r = t.read_until(">")
+  t.write("status\n".encode("utf-8"))
+  r = t.read_until(">".encode("utf-8")).decode("utf-8")
   if "file" not in r:
     return None
   m = re.search(r'//(.+?) \)', r)
   return m.group(1)
 
 def get_time():
-  t.write("get_time\n")
-  s = t.read_until(">").split("\n")[0].strip()
+  t.write("get_time\n".encode("utf-8"))
+  s = t.read_until(">".encode("utf-8")).decode("utf-8").split("\n")[0].strip()
   if not s:
     return 0
   s = int(s)
@@ -32,9 +32,9 @@ def get_time():
 
 # Setup VLC telnet
 t = telnetlib.Telnet("localhost", 4212)
-t.read_until("Password: ")
-t.write("admin\n")
-t.read_until(">")
+t.read_until("Password: ".encode("utf-8"))
+t.write("admin\n".encode("utf-8"))
+t.read_until(">".encode("utf-8"))
 
 print("connected to vlc")
 
@@ -63,8 +63,8 @@ while True:
 
   pos = get_time()
   for sub in subs:
-    if pos >= sub.start.total_seconds() and pos <= sub.end.total_seconds() and sub != last_sub:
-      last_sub = sub
+    if pos >= sub.start.total_seconds() and pos <= sub.end.total_seconds() and sub.content != last_sub:
+      last_sub = sub.content
       print(sub.content)
       broadcast(sub.content)
   time.sleep(.1)
