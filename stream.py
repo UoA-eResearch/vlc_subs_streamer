@@ -9,8 +9,9 @@ from socket import *
 
 try:
   from urllib.parse import urlparse
+  from urllib.request import url2pathname
 except ImportError:
-  from urlparse import urlparse
+  from urlparse import urlparse, url2pathname
 
 ips = ["172.22.0.80", "172.22.0.81", "172.22.0.82"]
 
@@ -26,8 +27,7 @@ def get_file():
     return None
   m = re.search(r'(file://.+?) \)', r)
   p = urlparse(m.group(1))
-  finalPath = os.path.abspath(os.path.join(p.netloc, p.path))
-  return finalPath
+  return url2pathname(p.path)
 
 def get_time():
   t.write("get_time\n".encode("utf-8"))
