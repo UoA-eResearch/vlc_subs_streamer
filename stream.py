@@ -11,7 +11,8 @@ try:
   from urllib.parse import urlparse
   from urllib.request import url2pathname
 except ImportError:
-  from urlparse import urlparse, url2pathname
+  from urlparse import urlparse
+  from urllib import url2pathname
 
 ips = ["172.22.0.80", "172.22.0.81", "172.22.0.82"]
 
