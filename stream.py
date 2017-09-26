@@ -7,6 +7,11 @@ import re
 import os
 from socket import *
 
+try:
+  from urllib.parse import urlparse
+except ImportError:
+  from urlparse import urlparse
+
 ips = ["172.22.0.80", "172.22.0.81", "172.22.0.82"]
 
 def broadcast(msg, port=15000):
@@ -19,8 +24,10 @@ def get_file():
   r = t.read_until(">".encode("utf-8")).decode("utf-8")
   if "file" not in r:
     return None
-  m = re.search(r'//(.+?) \)', r)
-  return m.group(1)
+  m = re.search(r'(file://.+?) \)', r)
+  p = urlparse(m.group(1))
+  finalPath = os.path.abspath(os.path.join(p.netloc, p.path))
+  return finalPath
 
 def get_time():
   t.write("get_time\n".encode("utf-8"))
