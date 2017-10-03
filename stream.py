@@ -63,7 +63,7 @@ while True:
     print("Reading {}".format(srt_file))
     try:
       with open(srt_file) as f:
-        subs = list(srt.parse(f.read()))
+        subs = list(srt.parse(f.read() + "\n"))
     except Exception as e:
       subs = []
       print(e)
