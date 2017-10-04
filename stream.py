@@ -71,7 +71,7 @@ while True:
 
   pos = get_time()
   for sub in subs:
-    if pos >= sub.start.total_seconds() and pos <= sub.end.total_seconds() and sub.content != last_sub:
+    if pos >= sub.start.total_seconds() and pos <= sub.end.total_seconds() and sub.content != last_sub and sub.content != "":
       last_sub = sub.content
       print(sub.content)
       broadcast(sub.content)
